@@ -1,0 +1,53 @@
+body{
+    width: 1000px;
+    height: 1200px;
+    background: #470000;
+    margin: 5px auto;
+}
+
+#static_header{
+    position: fixed;
+    background: #FAFAFA;
+    width: 990px;
+    height:100px;
+}
+.main_article{
+    margin-top: 150px;
+}
+
+
+
+.main{
+    padding: 5px;
+     background: #959787;
+     margin-top: -20px;
+}
+
+.label_input{
+    width: 300px;
+    border: transparent;
+}
+#grid{
+  float: right;
+}
+#floor_image{
+
+}
+.myimages{
+    margin: 10px auto;
+    height: 322px;
+
+    border: groove;
+    }
+
+
+
+.in{
+    width:300px;
+    border: groove;
+}
+
+.myimages img{
+
+    border: groove;
+}
