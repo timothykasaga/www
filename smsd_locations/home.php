@@ -21,28 +21,7 @@
     </center>
     </div>
     <section class="main_article">
-       <!--
-        <div id="intro">
-            <h2>Supermarket floor mapping</h2>
-            <form action="home.php">
-
-                    <div class="label_input"><label for="sname">Supermarket name</label>
-                    <input class="in" type="text" />
-                    </div>
-              </br>
-                    <div class="label_input"><label for="s_id">Supermarket id</label>
-                    <input class="in" type="text"/>
-                     </div>
-              </br>
-                    <div class="label_input"><label for="floor_no">Floor number</label>
-                    <input class="in" type="number"/>
-                    </div>
-
-
-            </form>
-        </div>
-
-        -->
+       
         <hr>
             <p><h4> Please upload image of floor plan </h4></p>
                 <form action="home.php" method="POST" enctype="multipart/form-data">
