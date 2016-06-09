@@ -14,12 +14,11 @@
 	include("connect.php");
 	$sql = "insert into admin(AdminName,Email,AdminUsername,Password,TelephoneNo) values('$name','$email','$uname','$upass','$tel')";
 	$result = mysqli_query($db,$sql);
-	if($result){
-	$resp = "success";
-	echo($resp);
+	$rows = mysqli_affected_rows($result);
+	if($rows > 0){
+	echo("success");
 	}else{
-	$resp ="failed";
-	echo($resp);
+	echo("failed");
 	}
 	mysqli_close($db);
 ?>

@@ -1,9 +1,10 @@
 <?php
-//receive data from android
-
 $products = $_POST['Productlist'];
-$products = json_decode($products);
+$str = preg_replace('/\\\\\"/',"\"", $products);
 
+$str = json_decode($str);
+
+$prodt_no = $_POST['Product_num'];
 $sname = $_POST['Name'];
 $slocation = $_POST['Location'];
 $swebsite = $_POST['Website'];
@@ -12,10 +13,8 @@ $stel = $_POST['Tel'];
 $sdesc = $_POST['Desc'];
 $slat = $_POST['Lat'];
 $slog = $_POST['Log'];
-$sadmin = $_POST['Admin'];
- 
+$sadmin = $_POST['Admin']; 
 $track_id = 1;
-
 	include("connect.php");
 	
 	if($db){
@@ -32,28 +31,51 @@ $track_id = 1;
 	TelephoneNo,Slogan,AdminUsername) values('$sname$track_id','$sname','$swebsite','$semail','$stel','$sdesc','$sadmin')";
 	mysqli_query($db,$sqlDetails);
 	
-	//Store prodts
-	foreach($products as $value1){
-	
-		$pname = $value1[0];
-		$pid = $value1[1];
-		$punitcost = $value1[2];
-		$punits = $value1[3];
-		$psection = $value1[4];
-		
-		$sql1 ="insert into product(ProductName,SupermarketID,ProductID,Measurement
-		,UnitCost,SectionName) values ('$pname','$sname$track_id','$pid','$punits',$punitcost,'$psection')";
-		mysqli_query($db,$sql1);
-		
-		}
-	
 	//Store lats and logs of supermarkets
 	$sql = "insert into supermarket_location(SupermarketID,Latitude,Longitude,LocationName) values('$sname$track_id',$slat,$slog,'$slocation')";
 	mysqli_query($db,$sql);
-	echo("success");
+	
+	
+	$count = 0;
+       
+
+	//Store prodts
+	
+      for($count = 0;$count<$prodt_no;$count++){
+
+		
+       $current_prodt = $str->$count;
+
+       $pname = $current_prodt->name;
+       $pid = $current_prodt->id;
+       $punitcost = $current_prodt->cost;
+       $punits = $current_prodt->units;
+       $psection = $current_prodt->sec;
+         
+              
+
+		$sqlgetSec = "select section.section_id from section where section.section_id = '$psection'";
+				$myres = mysqli_query($db,$sqlgetSec);
+		$rows = mysqli_affected_rows($db);
+		if($rows == 0)
+		{
+		$sqlSection = "insert into section(SectionName,section_id,SupermarketID,floor_no) values('$psection','$psection','$sname$track_id',0)";
+		mysqli_query($db,$sqlSection);
+		}
+		
+		
+		$sql1 ="insert into product(ProductName,SupermarketID,ProductID,Measurement,UnitCost,SectionName) values ('$pname','$sname$track_id','$pid','$punits',$punitcost,'$psection')";
+		mysqli_query($db,$sql1);
+		
+		}
+      
+       
+        echo("success");
+	
 	mysqli_close($db);
 	}
 	else{
 	echo("fail");
 	}
 
+?>

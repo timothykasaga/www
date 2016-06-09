@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
-
+<?php 
+ session_start();
+?>
 <html>
 
 <head>
@@ -15,9 +17,15 @@
           <h1>Smart Shopping Mate</h1>
           <h3>Powered by Leontymo developers</h3>
     </section>
+	
+	<!--
+	
     <section class="links">
         <h4><a href="home.htm">Home</a> || <a href="services.htm">Our services</a> || <a href="faq.htm">FAQ</a> || <a href="aboutus.htm">About us</a> </h4>
     </section>
+	
+	-->
+	
     </center>
     </div>
     <section class="main_article">
@@ -102,7 +110,8 @@
 						imagecopymerge($im, $stamp1, imagesx($im) - $sx - $marge_right, imagesy($im) - $sy - $marge_bottom, 0, 0, imagesx($stamp1), imagesy($stamp1),50);
 
 						// Save the image to file and free memory
-						imagepng($im, 'photo_stamp.png');	
+						imagepng($im, 'photo_stamp.png');
+						$_SESSION["image"] = "photo_stamp.png";
 						imagedestroy($im);
 						
 				  }
@@ -137,8 +146,8 @@
 
 
                 <hr>
-				<h4>Mappings</h4>
-                 <form action="mapping.php" method="POST">
+				<h4>First section mapping</h4>
+                 <form action="mapping.php" method="POST" style="height: 300px" >
                      <div>
                      <label for="sname" >Supermarket name</label><input type="text" name="sname"required="required" />
                      <label for="s_id">Supermarket id</label><input type="text" name="sid" required="required"/>
@@ -151,9 +160,18 @@
                      </div>
 
                      <h4>Grid cells for section </h4>
-
                      <div>
-                     <select name="cells[]"  multiple="multiple" size="5" style="width: 200px" required="required">
+					 <label>Section location<label>
+                     <select name="cells[]"  multiple="multiple" size="5" style="width: 200px";"float:left" required="required"> 
+					 <?php 
+						for($i =1; $i<495 ;$i++){
+						echo "<option >$i</option>";
+						}
+						?>
+                     </select>
+					
+					 <label>Route from entrance</label>
+                     <select name="route[]"  multiple="multiple" size="5" style="width: 200px";"float:right" required="required">
 					 
 					 <?php 
 						for($i =1; $i<495 ;$i++){
@@ -162,15 +180,12 @@
 						?>
 					 
                      </select>
-                     </div>
-                 </br>
-                     <div>
-                    <!-- <button name="view">View cells</button> -->
-                     <input type="submit" name="save" value="Save section details" />
-                     </div>
-                     <br>
-                     <!--<textarea rows="4" cols="64">
-                     </textarea>   -->
+                    
+					 
+					 </div>
+					 <hr>
+                    <input type="submit" name="save" value="Save section details" />
+                 
                 </form>
 
 

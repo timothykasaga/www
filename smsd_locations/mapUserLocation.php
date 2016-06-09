@@ -4,16 +4,29 @@
 	$product_name = $_POST['product_name'];
 	$supermarket_id = $_POST['supermarket_id']; */
 	
-	$supermarket_id = "Tuskys9";
-	$cell_no = 300;
-	$product_name = 'Maize';
-	$floor_no = 8;
-	$prodt_sec_floor_no = -1;
+	$supermarket_id = $_POST['supermarket_id'];
+	$cell_no = $_POST['cell_no'];
+	$product_name = $_POST['product_name'];
+	$floor_no = $_POST['floor_no'];
+	$prodt_sec_floor_no = 9;
 	$prodt_sec = '';
 	
 	$path = '';
 	
 	include("connect.php");
+	
+	
+	//trial to find product in supermarket_id
+	
+	$sqlcheckprodt = "select product.ProductName from product, supermarket_details where product.ProductName = '$product_name' and 
+	product.SupermarketID = supermarket_details.SupermarketID";
+	$res_check = mysqli_query($db,$sqlcheckprodt);
+	$returned_rows = mysqli_affected_rows($db);
+	if($returned_rows == 0){
+		echo("not existent");
+	}else{
+	
+	//finish find product
 	
 	//queries to user location and product section
 	
@@ -46,7 +59,12 @@
 		//echo "You are on floor : $floor_no <br>Product is on floor : $prodt_sec_floor_no<br>";
 	}
 	
+	
+	}
+	
 	function mapUserOnFloor($user_floor,$cell_no,$supermarket_id){
+	global $path;
+	global $floor_no;
 		// Load the stamp and the photo to apply the watermark to
 		$stamp1 = imagecreatefrompng("testlocateuser/marker.png");
 		$sx = imagesx($stamp1);
@@ -94,21 +112,23 @@
 		imagesy($im) - $sy - $marge_bottom, 0, 0, imagesx($stamp1), imagesy($stamp1),50);
 
 		// Save the image to file and free memory
-		imagejpeg($im, 'testlocateuser/nu_loc.jpeg');
+		imagejpeg($im, 'testlocateuser/'.$floor_no.$cell_no.'nu_loc.jpeg');
 		
-		$path = 'nu_loc.jpeg';
+		$path = $floor_no.$cell_no.'nu_loc.jpeg';
 		//echo json_encode($path);
 		
 		imagedestroy($im); 
-		$marge_right = $marge_right+30;
+		
 		$counter = $counter+1;
 		}
 	}
 	function mapSectionLocation($sec_id,$supermarket_id,$floor_no){
 		include("connect.php");
 		global $path;
+		global $cell_no;
 		//$section_id = $sec_id;
 		$query = "select cell_no from section_location where section_id = '$sec_id' and SupermarketID = '$supermarket_id'";
+		$query_route = "select cell_no from section_route where section_id = '$sec_id' and SupermarketID = '$supermarket_id'";
 		$result = mysqli_query($db, $query);
 		$arr = array();
 		$i = 0;
@@ -131,43 +151,77 @@
 				
 				$my_cell_margins[] = array("marge_right"=>$data[1],"marge_bottom"=>$data[2]);
 				if($counter == 0){
-					$im = imagecreatefromjpeg('testlocateuser/nu_loc.jpeg');	
+					$im = imagecreatefromjpeg('testlocateuser/'.$floor_no.$cell_no.'nu_loc.jpeg');	
 					}else{
-					$im = imagecreatefromjpeg('testlocateuser/nu_loc.jpeg');
+					$im = imagecreatefromjpeg('testlocateuser/'.$floor_no.$cell_no.'na_loc.jpeg');
 					}
 				imagecopymerge($im, $stamp1, imagesx($im) - $sx - $data[1], 
 				imagesy($im) - $sy - $data[2], 0, 0, imagesx($stamp1), imagesy($stamp1),50);
 
 				// Save the image to file and free memory
-				imagejpeg($im, 'testlocateuser/nu_loc.jpeg');
+				imagejpeg($im, 'testlocateuser/'.$floor_no.$cell_no.'na_loc.jpeg');
 				
-				//try to resize image
-					  $source_image = imagecreatefromjpeg('testlocateuser/nu_loc.jpeg');
-					  $source_imagex = imagesx($source_image);
-					  $source_imagey = imagesy($source_image);
-					  $dest_imagex = 375;
-					  $dest_imagey = 275;
-					  $dest_image = imagecreatetruecolor($dest_imagex, $dest_imagey);
-					  imagecopyresampled($dest_image, $source_image, 0, 0, 0, 0, $dest_imagex, $dest_imagey, $source_imagex, $source_imagey);
-
-					  imagejpeg($dest_image, 'testlocateuser/nu_loc1.jpeg');
-					  //move_uploaded_file($temploc,"images/".$name.".jpg");
-					  //merge_images($name);
-					  //finish resize
-				
-				$path = 'nu_loc1.jpeg';
+				$path = $floor_no.$cell_no.'na_loc.jpeg';
 				imagedestroy($im);
 												
 			}
-			//echo json_encode($path);
 			
 			$counter = $counter+1;
 							
 		}
 		
+		
+		//try to shade route
+		$result1 = mysqli_query($db, $query_route);
+		$arr = array();
+		$i = 0;
+		while($data = mysqli_fetch_array($result1)){
+		$arr[$i] = $data[0];
+		$i = $i + 1;
+		
+		}
+							
+		//get margins for all the cells.
+		$stamp1 = imagecreatefromjpeg("testlocateuser/marker.jpg");
+		$sx = imagesx($stamp1);
+		$sy = imagesy($stamp1);
+		$counter = 0;
+		foreach($arr as $item){
+			$query_margins = "select * from cell_margins where cell_no = $item";
+			$result1 = mysqli_query($db,$query_margins);
+
+			while($data = mysqli_fetch_array($result1)){
+				
+				$my_cell_margins[] = array("marge_right"=>$data[1],"marge_bottom"=>$data[2]);
+				if($counter == 0){
+					$im = imagecreatefromjpeg('testlocateuser/'.$floor_no.$cell_no.'na_loc.jpeg');	
+					}else{
+					$im = imagecreatefromjpeg('testlocateuser/'.$floor_no.$cell_no.'na_loc.jpeg');
+					}
+				imagecopymerge($im, $stamp1, imagesx($im) - $sx - $data[1], 
+				imagesy($im) - $sy - $data[2], 0, 0, imagesx($stamp1), imagesy($stamp1),50);
+
+				// Save the image to file and free memory
+				imagejpeg($im, 'testlocateuser/'.$floor_no.$cell_no.'na_loc.jpeg');
+				
+				$path = $floor_no.$cell_no.'na_loc.jpeg';
+				imagedestroy($im);
+												
+			}
+			
+			$counter = $counter+1;
+							
+		}
+		//finish shade route
+		
 
 	}
 	
-	echo $path;
-	
+		//echo $path;
+		$ar = array();
+		$ar['path'] = $path;
+		$ar['product_floor'] = $prodt_sec_floor_no;
+		$ar['user_floor'] = $floor_no;
+		echo(json_encode($ar));
+		
 ?>

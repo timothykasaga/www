@@ -1,8 +1,13 @@
 body{
     width: 1000px;
-    height: 1200px;
+    height: 1000px;
     background: #470000;
     margin: 5px auto;
+}
+
+.main_article_map{
+border:groove;
+background: #959787;
 }
 
 #static_header{
@@ -12,7 +17,7 @@ body{
     height:100px;
 }
 .main_article{
-    margin-top: 150px;
+    margin-top: 80px;
 }
 
 
@@ -51,3 +56,4 @@ body{
 
     border: groove;
 }
+
