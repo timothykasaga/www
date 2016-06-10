@@ -59,6 +59,12 @@
 		//echo "You are on floor : $floor_no <br>Product is on floor : $prodt_sec_floor_no<br>";
 	}
 	
+	//echo $path;
+		$ar = array();
+		$ar['path'] = $path;
+		$ar['product_floor'] = $prodt_sec_floor_no;
+		$ar['user_floor'] = $floor_no;
+		echo(json_encode($ar));
 	
 	}
 	
@@ -217,11 +223,6 @@
 
 	}
 	
-		//echo $path;
-		$ar = array();
-		$ar['path'] = $path;
-		$ar['product_floor'] = $prodt_sec_floor_no;
-		$ar['user_floor'] = $floor_no;
-		echo(json_encode($ar));
+		
 		
 ?>
