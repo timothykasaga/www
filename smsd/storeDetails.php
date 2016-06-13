@@ -69,6 +69,8 @@ $track_id = 1;
 		
 		}
       
+		$sqlLogin = "update admin set logintimes = 1 where admin.AdminUsername = '$sadmin'";
+		mysqli_query($db,$sqlLogin);
        
         echo("success");
 	
